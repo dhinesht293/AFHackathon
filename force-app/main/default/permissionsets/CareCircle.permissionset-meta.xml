@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>CareCircle</label>
+    <description>Grants access to CareCircle custom objects, fields, and the MatchProviders Apex class.</description>
+    <hasActivationRequired>false</hasActivationRequired>
+
+    <!-- Object permissions -->
+    <objectPermissions>
+        <object>Care_Need__c</object>
+        <allowRead>true</allowRead>
+        <allowCreate>true</allowCreate>
+        <allowEdit>true</allowEdit>
+        <allowDelete>true</allowDelete>
+        <viewAllRecords>true</viewAllRecords>
+        <modifyAllRecords>true</modifyAllRecords>
+    </objectPermissions>
+    <objectPermissions>
+        <object>Provider_Profile__c</object>
+        <allowRead>true</allowRead>
+        <allowCreate>true</allowCreate>
+        <allowEdit>true</allowEdit>
+        <allowDelete>true</allowDelete>
+        <viewAllRecords>true</viewAllRecords>
+        <modifyAllRecords>true</modifyAllRecords>
+    </objectPermissions>
+    <objectPermissions>
+        <object>Match__c</object>
+        <allowRead>true</allowRead>
+        <allowCreate>true</allowCreate>
+        <allowEdit>true</allowEdit>
+        <allowDelete>true</allowDelete>
+        <viewAllRecords>true</viewAllRecords>
+        <modifyAllRecords>true</modifyAllRecords>
+    </objectPermissions>
+    <objectPermissions>
+        <object>Wellbeing_CheckIn__c</object>
+        <allowRead>true</allowRead>
+        <allowCreate>true</allowCreate>
+        <allowEdit>true</allowEdit>
+        <allowDelete>true</allowDelete>
+        <viewAllRecords>true</viewAllRecords>
+        <modifyAllRecords>true</modifyAllRecords>
+    </objectPermissions>
+    <objectPermissions>
+        <object>Resource__c</object>
+        <allowRead>true</allowRead>
+        <allowCreate>true</allowCreate>
+        <allowEdit>true</allowEdit>
+        <allowDelete>true</allowDelete>
+        <viewAllRecords>true</viewAllRecords>
+        <modifyAllRecords>true</modifyAllRecords>
+    </objectPermissions>
+
+    <!-- Field permissions (non-required, FLS-eligible fields) -->
+    <fieldPermissions><field>Care_Need__c.Schedule__c</field><readable>true</readable><editable>true</editable></fieldPermissions>
+    <fieldPermissions><field>Care_Need__c.Recurrence__c</field><readable>true</readable><editable>true</editable></fieldPermissions>
+    <fieldPermissions><field>Care_Need__c.Requested_Day__c</field><readable>true</readable><editable>true</editable></fieldPermissions>
+    <fieldPermissions><field>Care_Need__c.Requested_Time_Block__c</field><readable>true</readable><editable>true</editable></fieldPermissions>
+    <fieldPermissions><field>Care_Need__c.Postal_Code__c</field><readable>true</readable><editable>true</editable></fieldPermissions>
+    <fieldPermissions><field>Care_Need__c.Geolocation__c</field><readable>true</readable><editable>true</editable></fieldPermissions>
+    <fieldPermissions><field>Care_Need__c.Notes__c</field><readable>true</readable><editable>true</editable></fieldPermissions>
+
+    <fieldPermissions><field>Provider_Profile__c.Availability_Day__c</field><readable>true</readable><editable>true</editable></fieldPermissions>
+    <fieldPermissions><field>Provider_Profile__c.Availability_Time_Block__c</field><readable>true</readable><editable>true</editable></fieldPermissions>
+    <fieldPermissions><field>Provider_Profile__c.Geolocation__c</field><readable>true</readable><editable>true</editable></fieldPermissions>
+    <fieldPermissions><field>Provider_Profile__c.Service_Radius_Km__c</field><readable>true</readable><editable>true</editable></fieldPermissions>
+    <fieldPermissions><field>Provider_Profile__c.Capacity__c</field><readable>true</readable><editable>true</editable></fieldPermissions>
+    <fieldPermissions><field>Provider_Profile__c.Active_Match_Count__c</field><readable>true</readable><editable>true</editable></fieldPermissions>
+    <fieldPermissions><field>Provider_Profile__c.Verified__c</field><readable>true</readable><editable>true</editable></fieldPermissions>
+    <fieldPermissions><field>Provider_Profile__c.Rating__c</field><readable>true</readable><editable>true</editable></fieldPermissions>
+
+    <fieldPermissions><field>Match__c.Match_Reason__c</field><readable>true</readable><editable>true</editable></fieldPermissions>
+
+    <fieldPermissions><field>Wellbeing_CheckIn__c.Strain_Signals__c</field><readable>true</readable><editable>true</editable></fieldPermissions>
+    <fieldPermissions><field>Wellbeing_CheckIn__c.Score__c</field><readable>true</readable><editable>true</editable></fieldPermissions>
+    <fieldPermissions><field>Wellbeing_CheckIn__c.Case__c</field><readable>true</readable><editable>true</editable></fieldPermissions>
+
+    <fieldPermissions><field>Resource__c.Summary__c</field><readable>true</readable><editable>true</editable></fieldPermissions>
+    <fieldPermissions><field>Resource__c.Source_URL__c</field><readable>true</readable><editable>true</editable></fieldPermissions>
+    <fieldPermissions><field>Resource__c.City__c</field><readable>true</readable><editable>true</editable></fieldPermissions>
+    <fieldPermissions><field>Resource__c.Is_Crisis_Resource__c</field><readable>true</readable><editable>true</editable></fieldPermissions>
+
+    <!-- Apex class access -->
+    <classAccesses>
+        <apexClass>MatchProviders</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+</PermissionSet>

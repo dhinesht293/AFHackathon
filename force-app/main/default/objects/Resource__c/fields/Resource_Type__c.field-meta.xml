@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Resource_Type__c</fullName>
+    <label>Resource Type</label>
+    <required>true</required>
+    <type>Picklist</type>
+    <description>Routing by need.</description>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value><fullName>Support Group</fullName><default>false</default><label>Support Group</label></value>
+            <value><fullName>Local Service</fullName><default>false</default><label>Local Service</label></value>
+            <value><fullName>Benefit/Scheme</fullName><default>false</default><label>Benefit/Scheme</label></value>
+            <value><fullName>Crisis Line</fullName><default>false</default><label>Crisis Line</label></value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

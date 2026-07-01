@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Recurrence__c</fullName>
+    <label>Recurrence</label>
+    <type>Picklist</type>
+    <description>Availability-overlap input.</description>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value><fullName>One-time</fullName><default>false</default><label>One-time</label></value>
+            <value><fullName>Daily</fullName><default>false</default><label>Daily</label></value>
+            <value><fullName>Weekly</fullName><default>false</default><label>Weekly</label></value>
+            <value><fullName>Weekdays</fullName><default>false</default><label>Weekdays</label></value>
+            <value><fullName>Weekends</fullName><default>false</default><label>Weekends</label></value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

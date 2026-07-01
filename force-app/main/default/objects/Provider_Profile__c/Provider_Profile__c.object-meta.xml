@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>A helper (Provider) who offers care. Scored by MatchProviders against a Care Need.</description>
+    <enableActivities>true</enableActivities>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <label>Provider Profile</label>
+    <nameField>
+        <label>Provider Profile Name</label>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>Provider Profiles</pluralLabel>
+    <sharingModel>ReadWrite</sharingModel>
+    <visibility>Public</visibility>
+</CustomObject>

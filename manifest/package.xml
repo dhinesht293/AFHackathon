@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <!-- CareCircle metadata manifest. Keep in sync as metadata is added. -->
+    <types>
+        <members>Care_Need__c</members>
+        <members>Provider_Profile__c</members>
+        <members>Match__c</members>
+        <members>Wellbeing_CheckIn__c</members>
+        <members>Resource__c</members>
+        <name>CustomObject</name>
+    </types>
+    <types>
+        <!-- Care_Need__c -->
+        <members>Care_Need__c.Seeker__c</members>
+        <members>Care_Need__c.Care_Type__c</members>
+        <members>Care_Need__c.Schedule__c</members>
+        <members>Care_Need__c.Recurrence__c</members>
+        <members>Care_Need__c.Requested_Day__c</members>
+        <members>Care_Need__c.Requested_Time_Block__c</members>
+        <members>Care_Need__c.City__c</members>
+        <members>Care_Need__c.Postal_Code__c</members>
+        <members>Care_Need__c.Geolocation__c</members>
+        <members>Care_Need__c.Urgency__c</members>
+        <members>Care_Need__c.Notes__c</members>
+        <members>Care_Need__c.Status__c</members>
+        <!-- Provider_Profile__c -->
+        <members>Provider_Profile__c.Contact__c</members>
+        <members>Provider_Profile__c.Services_Offered__c</members>
+        <members>Provider_Profile__c.Availability_Day__c</members>
+        <members>Provider_Profile__c.Availability_Time_Block__c</members>
+        <members>Provider_Profile__c.City__c</members>
+        <members>Provider_Profile__c.Geolocation__c</members>
+        <members>Provider_Profile__c.Service_Radius_Km__c</members>
+        <members>Provider_Profile__c.Capacity__c</members>
+        <members>Provider_Profile__c.Active_Match_Count__c</members>
+        <members>Provider_Profile__c.Verified__c</members>
+        <members>Provider_Profile__c.Rating__c</members>
+        <!-- Match__c -->
+        <members>Match__c.Care_Need__c</members>
+        <members>Match__c.Provider_Profile__c</members>
+        <members>Match__c.Score__c</members>
+        <members>Match__c.Match_Reason__c</members>
+        <members>Match__c.Status__c</members>
+        <!-- Wellbeing_CheckIn__c -->
+        <members>Wellbeing_CheckIn__c.Contact__c</members>
+        <members>Wellbeing_CheckIn__c.Strain_Signals__c</members>
+        <members>Wellbeing_CheckIn__c.Score__c</members>
+        <members>Wellbeing_CheckIn__c.Escalation_Status__c</members>
+        <members>Wellbeing_CheckIn__c.Case__c</members>
+        <!-- Resource__c -->
+        <members>Resource__c.Resource_Type__c</members>
+        <members>Resource__c.Summary__c</members>
+        <members>Resource__c.Source_URL__c</members>
+        <members>Resource__c.City__c</members>
+        <members>Resource__c.Is_Crisis_Resource__c</members>
+        <name>CustomField</name>
+    </types>
+    <types>
+        <members>MatchProviders</members>
+        <members>MatchProvidersTest</members>
+        <members>TestDataFactory</members>
+        <name>ApexClass</name>
+    </types>
+    <types>
+        <members>CareCircle</members>
+        <name>PermissionSet</name>
+    </types>
+    <version>66.0</version>
+</Package>
