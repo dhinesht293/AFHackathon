@@ -50,6 +50,16 @@
         <viewAllRecords>true</viewAllRecords>
         <modifyAllRecords>true</modifyAllRecords>
     </objectPermissions>
+    <!-- Case: crisis handoff created by WellbeingCheckInAction -->
+    <objectPermissions>
+        <object>Case</object>
+        <allowRead>true</allowRead>
+        <allowCreate>true</allowCreate>
+        <allowEdit>true</allowEdit>
+        <allowDelete>false</allowDelete>
+        <viewAllRecords>false</viewAllRecords>
+        <modifyAllRecords>false</modifyAllRecords>
+    </objectPermissions>
 
     <!-- Field permissions (non-required, FLS-eligible fields) -->
     <fieldPermissions><field>Care_Need__c.Schedule__c</field><readable>true</readable><editable>true</editable></fieldPermissions>
@@ -83,6 +93,22 @@
     <!-- Apex class access -->
     <classAccesses>
         <apexClass>MatchProviders</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>FindCareAction</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>ProviderMatchResponse</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>WellbeingCheckInAction</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>FindResourcesAction</apexClass>
         <enabled>true</enabled>
     </classAccesses>
 </PermissionSet>

@@ -59,7 +59,19 @@
         <members>MatchProviders</members>
         <members>MatchProvidersTest</members>
         <members>TestDataFactory</members>
+        <members>FindCareAction</members>
+        <members>FindCareActionTest</members>
+        <members>ProviderMatchResponse</members>
+        <members>ProviderMatchResponseTest</members>
+        <members>WellbeingCheckInAction</members>
+        <members>WellbeingCheckInActionTest</members>
+        <members>FindResourcesAction</members>
+        <members>FindResourcesActionTest</members>
         <name>ApexClass</name>
+    </types>
+    <types>
+        <members>CareCircle_Support</members>
+        <name>Queue</name>
     </types>
     <types>
         <members>CareCircle</members>

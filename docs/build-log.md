@@ -9,7 +9,9 @@ Running record of what has been built, deployed, and decided during implementati
 | Data model (5 objects) | ✅ Built & deployed | Deployed to **Hackathon Org** (orgfarm-e12067a131) |
 | `MatchProviders` Apex + tests | ✅ Done | TDD; **10/10 pass, 92% coverage**, run as least-privilege user via `TestDataFactory` |
 | Permission set | ✅ Done | `CareCircle` PS deployed + assigned; grants object/field FLS |
-| Agentforce agent (4 topics) | ⬜ Pending | Triage, Find Care, Provider, Well-being |
+| Agent backing actions (Apex) | ✅ Done | 4 invocable actions, **32 tests pass, 96% coverage** |
+| Agentforce agent (4 topics) | ⬜ Pending | Wire topics to the actions below |
+| Crisis handoff Queue | ✅ Done | `CareCircle Support` queue (Case) deployed |
 | Experience Cloud site | ⬜ Pending | Two audiences, embedded chat |
 | Crisis guardrail (Case + Queue) | ⬜ Pending | RAI non-negotiable |
 | Demo data (non-PII) | ✅ Done | Idempotent seed script; matching verified end-to-end |
@@ -70,3 +72,21 @@ Built `MatchProviders` + `MatchProvidersTest` test-first (stub → watched 10 te
 **Gotchas:** `Contact.Description`, `Care_Need__c.Notes__c`, and `Wellbeing_CheckIn__c.Strain_Signals__c` are Long Text Areas and **cannot be filtered with `=`/`LIKE` in SOQL**. Reworked cleanup to key off the demo Contacts' `LastName` (a filterable Text field) and delete related records by relationship.
 
 > **Pre-submission TODO:** the crisis-line resource uses a placeholder URL/number — replace with a real, verified helpline before the demo/submission (RAI: the crisis path must surface a genuine resource).
+
+### 2026-07-01 — Agent backing actions (4 invocable Apex actions, parallel build)
+
+Built the four Agentforce topic actions by fanning out four subagents in parallel (one per action, each authoring only its own class + test; no shared-file edits). Integrated centrally: permission set, manifest, deploy, and test run.
+
+- **`FindCareAction`** (Find Care spine) — creates `Care_Need__c`, calls `MatchProviders`, creates `Match__c` (Suggested), sets need to Matched. Request accepts `;`- or `,`-delimited multiselect inputs (normalized to `;`). **100% coverage.**
+- **`ProviderMatchResponse`** (provider accept/decline) — Accept → Match Accepted + provider `Active_Match_Count__c`++ + need Matched; Decline → Match Declined; guards invalid transitions (only Suggested/Requested actionable). **96%.**
+- **`WellbeingCheckInAction`** (crisis guardrail) — logs `Wellbeing_CheckIn__c`; thresholds: `isCrisis || score>=8` → creates `Case` routed to `CareCircle Support` queue + returns a real crisis `Resource__c` (`Case_Created`); `score>=4` → `Resources_Offered`; else `None`. Never generates advice — records + routes only. **97%.**
+- **`FindResourcesAction`** (grounded triage) — queries `Resource__c` by type/city, locality-specific before national (null city), capped; empty → `noResultsMessage`, never fabricates. **98%.**
+
+All four are `public with sharing`, bulk-safe (no SOQL/DML in loops), and use `WITH USER_MODE` / `AccessLevel.USER_MODE`.
+
+**Integration changes (central, by me — not the subagents):**
+- `CareCircle` permission set: added **Case** object CRUD (read/create/edit) and class access for all four actions. (Wellbeing field FLS was already present.)
+- New **`CareCircle Support`** Queue (`force-app/main/default/queues/`) over Case, for the crisis handoff — verified live in the org.
+- Manifest updated with the 8 new classes + queue.
+
+**Blocker hit & fixed:** `ProviderMatchResponseTest` used `'Elder Care'` (with a space) for `Care_Type__c`, which is a restricted picklist whose value is `Eldercare` → `INVALID_OR_NULL_FOR_RESTRICTED_PICKLIST` on insert (5 failing tests). Fixed the literals; scanned the other three test files for the same class of bug (none). Full deploy: **56/56 components**; full suite: **32/32 tests pass, 96% org-wide**, every action class ≥93%.

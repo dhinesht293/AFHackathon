@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Queue xmlns="http://soap.sforce.com/2006/04/metadata">
+    <name>CareCircle Support</name>
+    <description>Human handoff queue for CareCircle crisis escalations (Cases created by WellbeingCheckInAction).</description>
+    <doesSendEmailToMembers>false</doesSendEmailToMembers>
+    <queueSobject>
+        <sobjectType>Case</sobjectType>
+    </queueSobject>
+</Queue>
