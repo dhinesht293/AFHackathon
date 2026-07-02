@@ -10,7 +10,7 @@ Running record of what has been built, deployed, and decided during implementati
 | `MatchProviders` Apex + tests | ✅ Done | TDD; **10/10 pass, 92% coverage**, run as least-privilege user via `TestDataFactory` |
 | Permission set | ✅ Done | `CareCircle` PS deployed + assigned; grants object/field FLS |
 | Agent backing actions (Apex) | ✅ Done | 4 invocable actions, **32 tests pass, 96% coverage** |
-| Agentforce agent (4 topics) | ⬜ Pending | Wire topics to the actions below |
+| Agentforce agent (4 topics) | ⬜ Pending | Follow [`agent-build-guide.md`](agent-build-guide.md) to assemble + test |
 | Crisis handoff Queue | ✅ Done | `CareCircle Support` queue (Case) deployed |
 | Experience Cloud site | ⬜ Pending | Two audiences, embedded chat |
 | Crisis guardrail (Case + Queue) | ⬜ Pending | RAI non-negotiable |
@@ -22,6 +22,15 @@ Running record of what has been built, deployed, and decided during implementati
 `manifest/package.xml` mirrors all deployed metadata and is updated with every new component.
 
 ## Changelog
+
+### 2026-07-02 — README project documentation
+
+Replaced the default Salesforce DX template README with CareCircle-specific project documentation:
+
+- Project overview for the Agentforce for Good hackathon build.
+- Current source/build-state note to avoid overstating Agentforce site metadata that still needs org assembly/retrieval.
+- Architecture, key objects/classes, matching rules, target org guidance, deploy/test commands, safety/RAI constraints, repository structure, and documentation pointers.
+- No metadata changes and no org deploy required.
 
 ### 2026-07-01 — Data model
 

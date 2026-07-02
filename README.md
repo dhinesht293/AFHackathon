@@ -1,58 +1,161 @@
-# Salesforce DX Project
+# CareCircle
 
-Salesforce DX is a development approach that brings source-driven development, team collaboration, and continuous integration to the Salesforce Platform. Instead of working directly in an org through a web browser, you work with metadata as source files in a local DX project, track changes in version control, and deploy through automated processes.
+CareCircle is a Salesforce DX project for the Agentforce for Good hackathon. It is an Agentforce-powered, two-sided Experience Cloud community that helps working caregivers find verified local help, navigate grounded resources and benefits, and escalate caregiver burnout or crisis signals to a human support path.
 
-This project template gets you started with the tools and structure you need to build Salesforce applications using source control, scratch orgs, and the Salesforce CLI.
+The core design choice is deliberate: matching is deterministic Apex, not LLM ranking. Agentforce handles language understanding and conversational framing, while Apex owns record writes, provider scoring, explanations, and safety-critical state changes.
 
-## Prerequisites
+## Current Build State
 
-Before you start, make sure you have:
+Source currently includes the custom data model, permission set, crisis support queue, demo seed script, and Apex invocable actions that back the planned Agentforce topics. The Agentforce agent and Experience Cloud site are still assembled/configured in the org following `docs/agent-build-guide.md`; do not assume their metadata is complete in source until retrieved and added to `manifest/package.xml`.
 
-- **Salesforce CLI** - Download from [developer.salesforce.com/tools/salesforcecli](https://developer.salesforce.com/tools/salesforcecli). See [Install Salesforce CLI](https://developer.salesforce.com/docs/atlas.en-us.sfdx_setup.meta/sfdx_setup/sfdx_setup_install_cli.htm) for details.
-- **VS Code with Salesforce Extension Pack** - See [Installation Instructions](https://developer.salesforce.com/docs/platform/sfvscode-extensions/guide/install.html) for details. Includes the Agentforce Vibes extension.
-- **A development org** - Sign up for a free Developer Edition org [here](https://developer.salesforce.com/signup).
-- **Dev Hub enabled** (optional, required to create scratch orgs) - You can enable Dev Hub in your development org under Setup > Dev Hub.  See [Provide Developers Access to Salesforce DX Tools](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_setup_dx_tools.htm).
+## Architecture
 
-## Project Structure
+- **Salesforce DX project:** default package directory is `force-app`, API version `66.0`.
+- **Target org:** deploy CareCircle work to `Hackathon Org` (`dhinesh.t@hackathonorg.com`). Use `--target-org "Hackathon Org"` on Salesforce CLI commands.
+- **Experience Cloud:** two authenticated audiences, Care Seekers and Care Providers, with the agent embedded as web chat.
+- **Agentforce:** four topics planned: Triage & Navigate, Find Care, Provider Respond to Match, and Wellbeing Check-In.
+- **Apex actions:** `FindCareAction`, `FindResourcesAction`, `ProviderMatchResponse`, and `WellbeingCheckInAction` are the agent-facing invocable actions. `FindCareAction` calls `MatchProviders` internally.
+- **Service Cloud:** `CareCircle Support` queue receives Case handoffs from the crisis path.
+- **Grounding:** navigation answers use structured `Resource__c` records in the core build. Knowledge can be added later if richer authoring is needed.
 
-Your DX project follows this structure:
+## Key Metadata
 
-- **`force-app/main/default/`** - Your metadata source files live in this default package directory. You can configure additional package directories in the `sfdx-project.json` file.
-- **`config/`** - Scratch org definitions and project settings
-- **`scripts/`** - Automation scripts for common tasks
-- **`sfdx-project.json`** - Project manifest that defines package directories, namespace, API version, and other project-level settings
+Custom objects:
 
-See [Salesforce DX Project Configuration](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_ws_config.htm).
+- `Care_Need__c` captures a caregiver request, including care type, schedule, location, urgency, and lifecycle status.
+- `Provider_Profile__c` stores provider services, availability, location/radius, capacity, verification, and rating.
+- `Match__c` joins a care need to a provider and stores score, reason, and match lifecycle status.
+- `Wellbeing_CheckIn__c` records burnout/strain signals and escalation outcome.
+- `Resource__c` stores cited support groups, local services, benefits/schemes, and crisis resources.
 
-## Get Started
+Important Apex classes:
 
-Ready to start developing? The [Get Started with Salesforce DX](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_get_started_dx.htm) guide walks you through your first project, from creating a scratch org to creating a simple Apex class or LWC to deploying your code to a sandbox.
+- `MatchProviders` applies hard gates, weighted scoring, and deterministic reason generation. It returns the top matches or an honest no-match reason.
+- `FindCareAction` creates a care need, runs matching, and creates suggested matches.
+- `FindResourcesAction` returns cited resources and never fabricates results.
+- `ProviderMatchResponse` lets providers accept or decline actionable matches.
+- `WellbeingCheckInAction` logs wellbeing signals and creates a Case for crisis escalation.
+- `TestDataFactory` centralizes least-privilege test setup.
 
-## Common Salesforce CLI Commands
+`manifest/package.xml` is the deployment manifest and must stay in sync whenever metadata is added or removed.
 
-Here are common CLI commands that you'll use the most:
+## Matching Rules
 
-- `sf org login web`: Authorize an org
-- `sf org open`: Open your org in a browser
-- `sf org create scratch`: Create a scratch org
-- `sf project deploy start`: Deploy metadata to your org
-- `sf project retrieve start`: Retrieve metadata from your org
-- `sf template generate <artifact>`: Scaffold new components, such as Apex classes and triggers, LWC components, Lightning apps, and more
-- `sf apex <command>`: Run Apex tests, run anonymous Apex blocks, and view logs
-- `sf data <command>`: Work with test data
-- `sf alias <command>`: Manage org aliases
-- `sf config <command>`: Configure CLI settings
+`MatchProviders` first applies hard gates:
 
-## Use Agentforce Vibes to Build Lightning Apps
+- provider is verified;
+- provider offers the requested care type;
+- provider has remaining capacity;
+- provider is inside radius when geolocation is available, or in the same city as a fallback.
 
-Transform your ideas into custom Lightning apps that extend CRM workflows directly in Lightning Experience. Through natural conversations with Agentforce Vibes, implement custom objects and fields, complex business logic, and dynamic UI components. See [Build a Lightning App Using Agentforce Vibes](https://developer.salesforce.com/docs/platform/einstein-for-devs/guide/lexapp-overview.html).
+Passing providers are scored from 0-100 using the spec weights: location `0.40`, availability `0.35`, capacity `0.15`, and rating `0.10`. `Match_Reason__c` is assembled from the same fields used by the score, so the explanation stays aligned with the math. The matching path must remain bulk-safe, `with sharing`, and enforce CRUD/FLS using user-mode data access.
 
-## Additional Resources
+## Safety, Security, and RAI Constraints
 
-- [Agentforce Vibes Developer Guide](https://developer.salesforce.com/docs/platform/einstein-for-devs/guide/einstein-overview.html)
-- [Salesforce CLI Installation Guide](https://developer.salesforce.com/docs/atlas.en-us.sfdx_setup.meta/sfdx_setup/sfdx_setup_intro.htm)
-- [Salesforce DX Developer Guide](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/)
-- [Salesforce CLI Command Reference](https://developer.salesforce.com/docs/atlas.en-us.sfdx_cli_reference.meta/sfdx_cli_reference/)
-- [Salesforce CLI Plugin Development Guide](https://developer.salesforce.com/docs/platform/salesforce-cli-plugin/guide/conceptual-overview.html)
-- [Salesforce VS Code Extensions Documentation](https://developer.salesforce.com/tools/vscode/)
+- The agent must never diagnose, counsel, or provide mental-health advice.
+- Crisis language must create a human handoff Case and surface a real, verified helpline.
+- Only verified providers may be shown to seekers.
+- Matching must not use protected-class signals.
+- No real PII belongs in source, test data, demo scripts, or docs.
+- No-match and no-resource cases must be stated honestly; do not invent providers, benefits, or citations.
+- High-frequency matching makes zero inference calls; keep scoring in Apex for sustainability and explainability.
+
+## Setup and Deployment
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Confirm or authorize the target org:
+
+```bash
+sf org login web --alias "Hackathon Org"
+sf org display --target-org "Hackathon Org"
+```
+
+Deploy source metadata through the maintained manifest:
+
+```bash
+sf project deploy start --target-org "Hackathon Org" --manifest manifest/package.xml
+```
+
+Assign the permission set when needed:
+
+```bash
+sf org assign permset --name CareCircle --target-org "Hackathon Org"
+```
+
+Open the org:
+
+```bash
+sf org open --target-org "Hackathon Org"
+```
+
+Seed non-PII demo data:
+
+```bash
+sf apex run --file scripts/apex/seed-demo-data.apex --target-org "Hackathon Org"
+```
+
+## Testing and Verification
+
+Run the full Apex action suite:
+
+```bash
+sf apex run test --target-org "Hackathon Org" \
+  --tests MatchProvidersTest --tests FindCareActionTest \
+  --tests ProviderMatchResponseTest --tests WellbeingCheckInActionTest \
+  --tests FindResourcesActionTest \
+  --code-coverage --result-format human --wait 15
+```
+
+Run the focused matcher suite:
+
+```bash
+sf apex run test --target-org "Hackathon Org" --tests MatchProvidersTest --result-format human --wait 15
+```
+
+Run local formatting verification:
+
+```bash
+npm run prettier:verify
+```
+
+LWC lint and unit tests are available if Lightning components are added:
+
+```bash
+npm run lint
+npm run test:unit
+```
+
+Before trusting any Apex test result, confirm the preceding deploy succeeded; otherwise tests may be running against stale org code.
+
+## Repository Structure
+
+```text
+force-app/main/default/
+  classes/          Apex invocable actions, matcher, and tests
+  objects/          CareCircle custom objects and fields
+  permissionsets/   CareCircle object, field, and class access
+  queues/           CareCircle Support queue
+manifest/
+  package.xml       Source deploy/retrieve manifest
+scripts/apex/
+  seed-demo-data.apex
+docs/
+  superpowers/specs/2026-06-30-carecircle-design.md
+  agent-build-guide.md
+  carecircle-storyline.md
+  build-log.md
+```
+
+## Documentation
+
+- `docs/superpowers/specs/2026-06-30-carecircle-design.md` is the authoritative contract for the data model, matching weights, guardrails, and test matrix.
+- `docs/agent-build-guide.md` is the runbook for assembling and testing the Agentforce agent in the org.
+- `docs/carecircle-storyline.md` contains demo narrative and positioning.
+- `docs/build-log.md` records meaningful build/deploy/doc changes and known blockers.
+- `CLAUDE.md` captures repository workflow rules and Salesforce-specific implementation gotchas.
 
